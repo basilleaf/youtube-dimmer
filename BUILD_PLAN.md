@@ -5,7 +5,7 @@ Reference `PRD.md` for full feature details and `CLAUDE.md` for architecture rul
 
 ---
 
-## Step 0 — Vitest setup
+## [x] Step 0 — Vitest setup
 
 **Goal**: Testing infrastructure in place before any logic is written.
 
@@ -17,7 +17,7 @@ Reference `PRD.md` for full feature details and `CLAUDE.md` for architecture rul
 
 ---
 
-## Step 1 — Scaffold & looping video
+## [x] Step 1 — Scaffold & looping video
 
 **Goal**: A page that loads a YouTube video and loops it forever.
 
@@ -40,7 +40,7 @@ Reference `PRD.md` for full feature details and `CLAUDE.md` for architecture rul
 
 ---
 
-## Step 2 — Video URL input + shareable URLs
+## [x] Step 2 — Video URL input + shareable URLs
 
 **Goal**: User can load any YouTube video, and the active video is always in the URL.
 
@@ -60,7 +60,7 @@ video, and sharing the URL opens the same video.
 
 ---
 
-## Step 3 — Custom fullscreen (with overlay div in place)
+## [x] Step 3 — Custom fullscreen (with overlay div in place)
 
 **Goal**: Fullscreen works via our wrapper div so the overlay will travel with it.
 
@@ -88,7 +88,7 @@ native fullscreen button is gone.
 
 ---
 
-## Step 4 — Fade timer logic
+## [ ] Step 4 — Fade timer logic
 
 **Goal**: Wall-clock fade timer, auto-starts with video, includes 10-min delay before darkening.
 
@@ -119,7 +119,7 @@ for testing), then overlay begins fading in.
 
 ---
 
-## Step 5 — Fade controls UI
+## [ ] Step 5 — Fade controls UI
 
 **Goal**: Minimal UI to set duration, show progress, and allow manual override.
 
@@ -138,7 +138,7 @@ slider jumps the overlay opacity, Reset works.
 
 ---
 
-## Step 6 — Status bar
+## [ ] Step 6 — Status bar
 
 **Goal**: User can see what's happening at a glance.
 
@@ -155,7 +155,7 @@ slider jumps the overlay opacity, Reset works.
 
 ---
 
-## Step 7 — Polish & edge cases
+## [ ] Step 7 — Polish & edge cases
 
 - Graceful handling if `requestFullscreen` is unavailable (hide the button)
 - Error state if YouTube video fails to load (private/deleted video)
