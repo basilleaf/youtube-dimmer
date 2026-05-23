@@ -1,3 +1,10 @@
+# Youtube Dimmer
+
+A single-page ambient video app. The user loads a YouTube video, it loops indefinitely, and a black overlay slowly fades in over a user-defined duration (e.g. 6 hours) — completely independent of how long the video is or how many times it loops.
+
+See PRD.md for full feature spec.
+
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
