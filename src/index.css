@@ -9,3 +9,21 @@ body {
   background: #09090b;
   color: #f4f4f5;
 }
+
+/* Fullscreen: wrapper fills viewport, overlay and button travel with it */
+#player-wrap:fullscreen,
+#player-wrap:-webkit-full-screen {
+  width: 100vw;
+  height: 100vh;
+  aspect-ratio: unset;
+}
+
+/* Fullscreen button: hidden at rest, visible on hover */
+#fullscreen-btn {
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+#player-wrap:hover #fullscreen-btn {
+  opacity: 1;
+}
