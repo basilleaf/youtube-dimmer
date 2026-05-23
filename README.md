@@ -4,6 +4,7 @@ A single-page ambient video app. The user loads a YouTube video, it loops indefi
 
 See PRD.md for full feature spec.
 
+My use case is I like to leave ambient video running overnight including audio, but they seem very bright when/if anyone gets up in the night, so i want them to keep playing but visual brightness slowly fades to black"
 
 # React + TypeScript + Vite
 
