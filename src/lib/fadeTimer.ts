@@ -30,6 +30,11 @@ export class FadeTimer {
     return 'fading'
   }
 
+  getElapsedMs(): number {
+    if (this.startTime === null) return 0
+    return Date.now() - this.startTime
+  }
+
   // Adjusts startTime so getProgress() returns the given progress immediately.
   // Works even if the timer hasn't been started yet.
   seekTo(progress: number, fadeDurationMs: number): void {

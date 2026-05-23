@@ -119,7 +119,7 @@ for testing), then overlay begins fading in.
 
 ---
 
-## [ ] Step 5 — Fade controls UI
+## [x] Step 5 — Fade controls UI
 
 **Goal**: Minimal UI to set duration, show progress, and allow manual override.
 

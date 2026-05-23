@@ -1,6 +1,8 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { YouTubePlayer } from './components/YouTubePlayer'
+import { FadeControls } from './components/FadeControls'
 import { extractVideoId } from './lib/youtube'
+import { FadeTimer, DEFAULT_FADE_DURATION_MS } from './lib/fadeTimer'
 
 const DEFAULT_VIDEO_ID = 'jNQXAC9IVRw'
 
@@ -13,6 +15,8 @@ function App() {
   const [videoId, setVideoId] = useState(getInitialVideoId)
   const [inputValue, setInputValue] = useState(videoId)
   const [error, setError] = useState<string | null>(null)
+  const [fadeDurationMs, setFadeDurationMs] = useState(DEFAULT_FADE_DURATION_MS)
+  const timerRef = useRef(new FadeTimer())
 
   function loadVideo() {
     const id = extractVideoId(inputValue)
@@ -24,6 +28,10 @@ function App() {
     setVideoId(id)
     setInputValue(id)
     history.replaceState(null, '', `?v=${id}`)
+  }
+
+  function handleReset() {
+    timerRef.current.reset()
   }
 
   return (
@@ -80,7 +88,18 @@ function App() {
           </p>
         )}
 
-        <YouTubePlayer videoId={videoId} />
+        <YouTubePlayer
+          videoId={videoId}
+          timerRef={timerRef}
+          fadeDurationMs={fadeDurationMs}
+        />
+
+        <FadeControls
+          timerRef={timerRef}
+          fadeDurationMs={fadeDurationMs}
+          onDurationChange={setFadeDurationMs}
+          onReset={handleReset}
+        />
 
       </div>
     </main>
