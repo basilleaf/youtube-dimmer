@@ -88,7 +88,7 @@ native fullscreen button is gone.
 
 ---
 
-## [ ] Step 4 — Fade timer logic
+## [x] Step 4 — Fade timer logic
 
 **Goal**: Wall-clock fade timer, auto-starts with video, includes 10-min delay before darkening.
 
@@ -102,9 +102,9 @@ native fullscreen button is gone.
   - `seekTo(progress: number)` — allows the slider to jump the fade position
 - Create `src/types/fade.ts`:
   ```ts
-  type FadeState = 'idle' | 'delaying' | 'fading' | 'complete'
+  type FadeState = "idle" | "delaying" | "fading" | "complete";
   interface FadeConfig {
-    durationMs: number  // how long the actual fade takes (not including delay)
+    durationMs: number; // how long the actual fade takes (not including delay)
   }
   ```
 - No easing lib — linear is `elapsed / durationMs`

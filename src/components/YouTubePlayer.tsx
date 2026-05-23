@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { loadYouTubeAPI } from '../lib/youtube'
+import { FadeTimer, DEFAULT_FADE_DURATION_MS } from '../lib/fadeTimer'
 
 interface Props {
   videoId: string
@@ -37,15 +38,42 @@ function isFullscreenEl(el: HTMLElement | null) {
 export function YouTubePlayer({ videoId, onLoopCountChange }: Props) {
   const playerWrapRef = useRef<HTMLDivElement>(null)
   const wrapperRef = useRef<HTMLDivElement>(null)
+  const overlayRef = useRef<HTMLDivElement>(null)
   const playerRef = useRef<YT.Player | null>(null)
   const loopCountRef = useRef(0)
   const [isFullscreen, setIsFullscreen] = useState(false)
+
+  const timerRef = useRef(new FadeTimer())
+  const rafIdRef = useRef(0)
 
   const onLoopCountChangeRef = useRef(onLoopCountChange)
   onLoopCountChangeRef.current = onLoopCountChange
 
   const videoIdRef = useRef(videoId)
   videoIdRef.current = videoId
+
+  // Updated on every render so rAF callbacks always use the latest version.
+  const scheduleTickRef = useRef<() => void>()
+  scheduleTickRef.current = () => {
+    const overlay = overlayRef.current
+    if (!overlay) return
+    const progress = timerRef.current.getProgress(DEFAULT_FADE_DURATION_MS)
+    overlay.style.opacity = String(progress)
+    if (progress < 1) {
+      rafIdRef.current = requestAnimationFrame(scheduleTickRef.current!)
+    } else {
+      rafIdRef.current = 0
+    }
+  }
+
+  // Stable ref so the YT player closure (created once) can call the latest version.
+  const startFadeLoopRef = useRef<() => void>()
+  startFadeLoopRef.current = () => {
+    timerRef.current.start() // idempotent — no-op if already started
+    if (rafIdRef.current === 0) {
+      rafIdRef.current = requestAnimationFrame(scheduleTickRef.current!)
+    }
+  }
 
   // Create the player once on mount
   useEffect(() => {
@@ -74,6 +102,9 @@ export function YouTubePlayer({ videoId, onLoopCountChange }: Props) {
         },
         events: {
           onStateChange(event) {
+            if (event.data === window.YT!.PlayerState.PLAYING) {
+              startFadeLoopRef.current?.()
+            }
             if (event.data === window.YT!.PlayerState.ENDED) {
               loopCountRef.current += 1
               onLoopCountChangeRef.current?.(loopCountRef.current)
@@ -87,6 +118,7 @@ export function YouTubePlayer({ videoId, onLoopCountChange }: Props) {
 
     return () => {
       cancelled = true
+      cancelAnimationFrame(rafIdRef.current)
       playerRef.current?.destroy()
       playerRef.current = null
     }
@@ -98,6 +130,21 @@ export function YouTubePlayer({ videoId, onLoopCountChange }: Props) {
     loopCountRef.current = 0
     playerRef.current.loadVideoById(videoId)
   }, [videoId])
+
+  // Restart rAF loop when the tab becomes visible again.
+  // Since getProgress uses Date.now() math, elapsed time during the hidden
+  // period is automatically accounted for — no drift.
+  useEffect(() => {
+    function handleVisibility() {
+      if (document.visibilityState !== 'visible') return
+      const state = timerRef.current.getFadeState(DEFAULT_FADE_DURATION_MS)
+      if ((state === 'delaying' || state === 'fading') && rafIdRef.current === 0) {
+        rafIdRef.current = requestAnimationFrame(scheduleTickRef.current!)
+      }
+    }
+    document.addEventListener('visibilitychange', handleVisibility)
+    return () => document.removeEventListener('visibilitychange', handleVisibility)
+  }, [])
 
   // Track fullscreen state
   useEffect(() => {
@@ -130,14 +177,15 @@ export function YouTubePlayer({ videoId, onLoopCountChange }: Props) {
       {/* YT iframe target — replaced by iframe on mount */}
       <div ref={wrapperRef} style={{ position: 'absolute', inset: 0 }} />
 
-      {/* Fade overlay — opacity 0.3 temporarily; driven by fade timer in Step 4 */}
+      {/* Fade overlay — opacity driven by rAF loop via timerRef */}
       <div
+        ref={overlayRef}
         id="fade-overlay"
         style={{
           position: 'absolute',
           inset: 0,
           background: '#000',
-          opacity: 0.3,
+          opacity: 0,
           pointerEvents: 'none',
           zIndex: 1,
         }}
