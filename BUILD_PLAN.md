@@ -138,24 +138,7 @@ slider jumps the overlay opacity, Reset works.
 
 ---
 
-## [ ] Step 6 — Status bar
-
-**Goal**: User can see what's happening at a glance.
-
-- Create `StatusBar.tsx`, rendered below the player:
-  - Player state pill: Loading / Playing / Paused / Buffering
-  - Video time: `1:23:45 / 3:00:00` (polled from `player.getCurrentTime()` / `getDuration()`)
-  - Loop count: `Loop 3`
-  - Fade state: `2h 14m elapsed · 3h 46m remaining` (or "Idle" / "Complete")
-  - Overlay opacity: `37%`
-- Poll video time on a 1s interval (not rAF — no need for 60fps here)
-- Format durations as `Xh Ym` for long durations, `M:SS` for video time
-
-**Done when**: status bar reflects live state accurately, including during fullscreen.
-
----
-
-## [ ] Step 7 — Polish & edge cases
+## [ ] Step 6 — Polish & edge cases
 
 - Graceful handling if `requestFullscreen` is unavailable (hide the button)
 - Error state if YouTube video fails to load (private/deleted video)
