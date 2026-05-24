@@ -2,20 +2,37 @@ import { useRef, useState } from "react";
 import { YouTubePlayer } from "./components/YouTubePlayer";
 import { FadeControls } from "./components/FadeControls";
 import { extractVideoId } from "./lib/youtube";
-import { FadeTimer, DEFAULT_FADE_DURATION_MS } from "./lib/fadeTimer";
+import { FadeTimer } from "./lib/fadeTimer";
+
+const DEFAULT_FADE_HOURS = 8;
 
 function getInitialVideoId(): string {
   const v = new URLSearchParams(window.location.search).get("v");
   return (v && extractVideoId(v)) ?? "";
 }
 
+function getInitialFadeDurationMs(): number {
+  const d = new URLSearchParams(window.location.search).get("d");
+  const hours = d ? parseFloat(d) : NaN;
+  return Number.isFinite(hours) && hours > 0
+    ? hours * 3_600_000
+    : DEFAULT_FADE_HOURS * 3_600_000;
+}
+
+function buildUrl(videoId: string, fadeDurationMs: number): string {
+  const params = new URLSearchParams();
+  if (videoId) params.set("v", videoId);
+  const hours = fadeDurationMs / 3_600_000;
+  if (hours !== DEFAULT_FADE_HOURS) params.set("d", String(hours));
+  const qs = params.toString();
+  return qs ? `?${qs}` : window.location.pathname;
+}
+
 function App() {
   const [videoId, setVideoId] = useState(getInitialVideoId);
-  const [inputValue, setInputValue] = useState(videoId);
+  const [inputValue, setInputValue] = useState(getInitialVideoId);
   const [error, setError] = useState<string | null>(null);
-  const [fadeDurationMs, setFadeDurationMs] = useState(
-    DEFAULT_FADE_DURATION_MS,
-  );
+  const [fadeDurationMs, setFadeDurationMs] = useState(getInitialFadeDurationMs);
   const timerRef = useRef(new FadeTimer());
 
   function loadVideo() {
@@ -26,7 +43,12 @@ function App() {
     }
     setError(null);
     setVideoId(id);
-    history.replaceState(null, "", `?v=${id}`);
+    history.replaceState(null, "", buildUrl(id, fadeDurationMs));
+  }
+
+  function handleDurationChange(ms: number) {
+    setFadeDurationMs(ms);
+    history.replaceState(null, "", buildUrl(videoId, ms));
   }
 
   function handleReset() {
@@ -106,7 +128,7 @@ function App() {
         <FadeControls
           timerRef={timerRef}
           fadeDurationMs={fadeDurationMs}
-          onDurationChange={setFadeDurationMs}
+          onDurationChange={handleDurationChange}
           onReset={handleReset}
         />
       </div>
