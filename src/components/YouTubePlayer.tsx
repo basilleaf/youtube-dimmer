@@ -63,7 +63,7 @@ export function YouTubePlayer({
   videoIdRef.current = videoId;
 
   // Reassigned every render so the rAF callback always uses the latest fadeDurationMs.
-  const scheduleTickRef = useRef<() => void>();
+  const scheduleTickRef = useRef<(() => void) | undefined>(undefined);
   scheduleTickRef.current = () => {
     const overlay = overlayRef.current;
     if (overlay) {

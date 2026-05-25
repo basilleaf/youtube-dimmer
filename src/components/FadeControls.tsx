@@ -46,7 +46,7 @@ export function FadeControls({ timerRef, fadeDurationMs, onDurationChange, onRes
   const [inputNum, setInputNum] = useState(initialHours)
 
   // Reassigned every render so the rAF callback always uses the latest props.
-  const scheduleTickRef = useRef<() => void>()
+  const scheduleTickRef = useRef<(() => void) | undefined>(undefined)
   scheduleTickRef.current = () => {
     const timer = timerRef.current
     const state = timer.getFadeState(fadeDurationMs)
