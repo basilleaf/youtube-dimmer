@@ -68,6 +68,15 @@ function App() {
       }}
     >
       <div style={{ width: "100%", maxWidth: "896px" }}>
+        <header style={{ marginBottom: "20px" }}>
+          <h1 style={{ fontSize: "18px", fontWeight: 600, color: "#f4f4f5", margin: "0 0 4px", letterSpacing: "-0.01em" }}>
+            YouTube Slow Fade Player
+          </h1>
+          <p style={{ fontSize: "13px", color: "#71717a", margin: 0 }}>
+            Loop any YouTube video while the screen slowly fades to black — a gentle sleep timer for lo-fi, nature, fireplace, and rain videos.
+          </p>
+        </header>
+
         {/* URL / ID input */}
         <div
           style={{

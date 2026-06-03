@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+
+Sitemap: https://youtube-dimmer.vercel.app/sitemap.xml
