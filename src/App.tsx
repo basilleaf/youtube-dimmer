@@ -30,7 +30,10 @@ function buildUrl(videoId: string, fadeDurationMs: number): string {
 
 function App() {
   const [videoId, setVideoId] = useState(getInitialVideoId);
-  const [inputValue, setInputValue] = useState(getInitialVideoId);
+  const [inputValue, setInputValue] = useState(() => {
+    const id = getInitialVideoId();
+    return id ? `https://www.youtube.com/watch?v=${id}` : "";
+  });
   const [error, setError] = useState<string | null>(null);
   const [fadeDurationMs, setFadeDurationMs] = useState(getInitialFadeDurationMs);
   const timerRef = useRef(new FadeTimer());
